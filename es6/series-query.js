@@ -2,46 +2,6 @@
  * @description 分页类请求发起，解决的问题：1. 参数保留，即保证翻页时请求参数不会变化，
  * 2. 时序保证，翻页时数据总是最后一次的页码，不会因为接口延时导致数据显示不正确
  * 3. 解决 loading 在中途取消问题
- * @example
-// 创建实例
-created () {
-  this.pageQuery = new SeriesQuery({
-    func: apiFetch,
-    onLoadingChange: (val) => {
-      this.loading = val
-    }
-  })
-}
-// 设置固定的 params
-search () {
-  this.pageQuery.setQueryParams(this.filter)
-}
-// 查询分页的列表
-getList () {
-  const params = {
-    page_size: this.page.page_size,
-    page_num: this.page.page_num,
-  }
-  return this.pageQuery.query(params)
-    .then((res) => {
-      if (res.name === 'PageOrderError') {
-        return
-      }
-      if (res.error_no !== 0) {
-        alert('error')
-        return
-      }
-      this.list.data = (res.data && res.data.list) || []
-    })
-}
-// 使用除分页外的参数进行导出等操作
-exportList () {
-  const params = {
-    query: this.pageQuery.getStaleParams()
-  }
-  return query(params)
-}
- *
  */
 
 const defaultOptions = {
