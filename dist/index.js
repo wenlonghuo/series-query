@@ -72,7 +72,7 @@ var SeriesQuery = function () {
       var func = queryOptions.func;
 
       if (!func || typeof func !== 'function') {
-        throw new TypeError('Please set Series-query query function');
+        return Promise.reject(new TypeError('Please set Series-query query function'));
       }
 
       var queryingParams = params;
@@ -83,7 +83,7 @@ var SeriesQuery = function () {
         // 遍历每个 key，设置为最新
         // 实际上每次都会产生修改，便于继承上一次的默认值
         queryOptions.varyKeys.forEach(function (key) {
-          if (params[key] !== undefined) {
+          if (Object.prototype.hasOwnProperty.call(params, key)) {
             queryingParams[key] = params[key];
           }
         });

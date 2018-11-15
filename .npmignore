@@ -1,0 +1,6 @@
+.gitignore
+.eslintignore
+.eslintrc.js
+.babelrc
+test/
+node_modules
