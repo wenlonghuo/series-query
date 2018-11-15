@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>请求顺序保证测试</title>
+  <meta name="viewport" id="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no">
+  <style>
+    .flex-box {
+      display: flex;
+      justify-content: space-around;
+    }
+    .flex-box>div {
+      margin: 10px 20px;
+      flex: 1;
+    }
+    .table-box {
+      position: relative;
+    }
+    td {
+      padding: 10px 20px;
+    }
+    .page {
+      display: flex;
+    }
+    .page a {
+      width: 80px;
+      background-color: #f8f8f8;
+      margin: 10px 10px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .page a.active {
+      background-color: green;
+    }
+    .loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>请求顺序保证测试</h1>
+  <div class="flex-box">
+    <div id="root">
+      <h2>标准版列表查询</h2>
+      <div class="input">
+        <input type="text" name="" v-model="filter.name" placeholder="输入筛选条件">
+        <button @click="handleSearch">查询</button>
+      </div>
+      <div class="table-box">
+        <table>
+          <tr v-for="(row, index) in list" :key="index">
+            <td :key="colIndex" v-for="(col, colIndex) in row">{{col}}</td>
+          </tr>
+        </table>
+        <div class="loading" :style="{display: loading ? 'block' : 'none'}"></div>
+      </div>
+      <div class="page">
+        <a
+        v-for="(item) in [1,2,3,4]"
+          :key="item"
+          @click="handleChangePage(item)"
+          :class="{active: page.page_num === item}">第{{item}}页</a>
+      </div>
+    </div>
+
+    <div id="series-root">
+      <h2>series-query 版列表查询</h2>
+      <div class="input">
+        <input type="text" name="" v-model="filter.name" placeholder="输入筛选条件">
+        <button @click="handleSearch">查询</button>
+      </div>
+      <div class="table-box">
+        <table>
+          <tr v-for="(row, index) in list" :key="index">
+            <td :key="colIndex" v-for="(col, colIndex) in row">{{col}}</td>
+          </tr>
+        </table>
+        <div class="loading" :style="{display: loading ? 'block' : 'none'}"></div>
+      </div>
+      <div class="page">
+        <a
+        v-for="(item) in [1,2,3,4]"
+          :key="item"
+          @click="handleChangePage(item)"
+          :class="{active: page.page_num === item}">第{{item}}页</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script src="https://cdn.bootcss.com/vue/2.5.17/vue.min.js"></script>
+<script src="../dist/series-query.min.js"></script>
+<script src="../examples/api.js"></script>
+<script>
+var SeriesQuery = seriesQuery.default
+
+new Vue({
+  el: '#root',
+  data () {
+    return {
+      filter: {
+        name: ''
+      },
+      page: {
+        page_num: 1,
+        page_size: 10
+      },
+      list: [],
+      loading: false
+    }
+  },
+  created () {
+    this.handleSearch()
+  },
+  methods: {
+    getList () {
+      this.loading = true
+      const params = {
+        ...this.filter,
+        ...this.page
+      }
+      return api.getData(params).then(({list, time}) => {
+        this.list = list
+        this.loading = false
+      })
+    },
+    handleSearch () {
+      this.page.page_num = 1
+      this.getList()
+    },
+    handleChangePage (index) {
+      this.page.page_num = index
+      this.getList()
+    }
+  }
+})
+
+new Vue({
+  el: '#series-root',
+  data () {
+    return {
+      filter: {
+        name: ''
+      },
+      page: {
+        page_num: 1,
+        page_size: 10
+      },
+      list: [],
+      loading: false
+    }
+  },
+  created () {
+    this.pageQuery = new SeriesQuery({
+      func: api.getData,
+      onLoadingChange: (val) => {
+        this.loading = val
+      }
+    })
+    this.handleSearch()
+  },
+  methods: {
+    getList () {
+      const params = {
+        ...this.filter,
+        ...this.page
+      }
+      return this.pageQuery.query(params).then((res) => {
+        if (res instanceof Error && res.name === 'SeriesOrderError') {
+          return
+        }
+        const { list, time } = res
+        this.list = list
+      })
+    },
+    handleSearch () {
+      this.page.page_num = 1
+      this.pageQuery.setQueryParams(this.filter)
+      this.getList()
+    },
+    handleChangePage (index) {
+      this.page.page_num = index
+      this.getList()
+    }
+  }
+})
+</script>
+</html>

@@ -3,4 +3,5 @@
 .eslintrc.js
 .babelrc
 test/
+examples/
 node_modules
