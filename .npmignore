@@ -2,6 +2,7 @@
 .eslintignore
 .eslintrc.js
 .babelrc
+.DS_Store
 test/
 examples/
 node_modules
