@@ -88,6 +88,7 @@
 
   var defaultOptions = {
     stale: true, // 保证参数不变化
+    onlyLatest: false, // 只保留最新一次的返回，只要不是最后一次查询的结果全部丢弃
     func: undefined, // 查询执行的函数, 必传
     varyKeys: ['page_size', 'page_num'], // 每次查询中可能会变化的键值
     onLoadingChange: undefined // loading 状态变化函数，只在没有查询时和启动查询时变化，接收参数为 boolean
@@ -132,7 +133,7 @@
      * 发起请求
      * @param {*} params 查询需要的参数
      * @param {*} options defaultOptions 其他参数
-     * @return {Promise<any>} promise，可能返回 PageOrderError 错误
+     * @return {Promise<any>} promise，可能返回 SeriesOrderError 错误
      */
 
 
@@ -169,7 +170,7 @@
         return func(queryingParams).then(function (res) {
           _this2.setUnLoading(queryId);
           // 已经完成查询的 ID 大于当前 ID，需要返回丢弃信息
-          if (queryId < _this2.lastId) {
+          if (queryId < _this2.lastId || queryOptions.onlyLatest && queryId < _this2.count) {
             var error = new SeriesOrderError();
             error.data = res;
             return error;

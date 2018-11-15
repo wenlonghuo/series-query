@@ -9,6 +9,7 @@
 
 ### 支持配置参数
 - stale: 保证参数不变化，默认为 true
+- onlyLatest: 只保留最新一次的返回，只要不是最后一次请求的结果全部丢弃，默认为 false
 - func: 查询执行的函数, 必传
 - varyKeys: 每次查询中可能会变化的键值，默认 ['page_size', 'page_num']
 - onLoadingChange: loading 状态变化函数，只在没有查询时和启动查询时变化，接收参数为 boolean
@@ -43,7 +44,7 @@ getList () {
   }
   return this.pageQuery.query(params)
     .then((res) => {
-      if (res.name === 'PageOrderError') {
+      if (res.name === 'SeriesOrderError') {
         return
       }
       if (res.error_no !== 0) {
@@ -80,7 +81,7 @@ getList () {
   }
   return this.pageQuery.query(params)
     .then((res) => {
-      if (res.name === 'PageOrderError') {
+      if (res.name === 'SeriesOrderError') {
         return
       }
       if (res.error_no !== 0) {

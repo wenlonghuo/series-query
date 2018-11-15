@@ -164,6 +164,7 @@ new Vue({
   },
   created () {
     this.pageQuery = new SeriesQuery({
+      onlyLatest: false,
       func: api.getData,
       onLoadingChange: (val) => {
         this.loading = val
