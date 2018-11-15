@@ -44,7 +44,7 @@ getList () {
   }
   return this.pageQuery.query(params)
     .then((res) => {
-      if (res.name === 'SeriesOrderError') {
+      if (res instanceof Error && res.name === 'SeriesOrderError') {
         return
       }
       if (res.error_no !== 0) {
@@ -81,7 +81,7 @@ getList () {
   }
   return this.pageQuery.query(params)
     .then((res) => {
-      if (res.name === 'SeriesOrderError') {
+      if (res instanceof Error && res.name === 'SeriesOrderError') {
         return
       }
       if (res.error_no !== 0) {
