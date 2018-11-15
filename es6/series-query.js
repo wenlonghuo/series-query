@@ -24,6 +24,7 @@ class SeriesQuery {
       ...defaultOptions,
       ...options,
     };
+    this.queryingParams = {}; // 初始化默认的查询参数为空对象
     this.count = -1; // 自动计数器
     this.lastId = -1; // 最后一次请求的 ID
     this.loadingId = -1; // loading 的 id, 之所以和 lastId 不共用，是因为lastId 是在请求成功后才赋值，loading 需要开始请求就赋值
