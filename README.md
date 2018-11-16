@@ -5,6 +5,15 @@
 2. 时序保证，连续请求只保留最后一次数据，不会因为接口返回顺序不同导致数据显示不正确
 3. 解决多次请求时 loading 在中途取消问题
 
+下面是示例，其中未使用本库之前简单的表格翻页 BUG 如下
+（其中第一页返回结果延迟1s, 第二页 2s，第三页 3s， 第四页 4s，代码可在示例网站中查看源代码）：
+
+![](https://image.eff.red/series-query-async-error.gif)
+
+使用本库之后的结果：
+
+![](https://image.eff.red/series-query-async-right.gif)
+
 ## 使用方式
 
 ### 支持配置参数
