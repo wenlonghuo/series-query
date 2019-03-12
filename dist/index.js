@@ -188,7 +188,7 @@
       value: function getStaleParams() {
         var params = _extends({}, this.queryingParams);
         this.options.varyKeys.forEach(function (key) {
-          params[key] = undefined;
+          delete params[key];
         });
         return params;
       }

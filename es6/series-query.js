@@ -90,7 +90,7 @@ class SeriesQuery {
       ...this.queryingParams,
     };
     this.options.varyKeys.forEach((key) => {
-      params[key] = undefined;
+      delete params[key];
     });
     return params;
   }
